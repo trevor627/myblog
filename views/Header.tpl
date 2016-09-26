@@ -1,7 +1,7 @@
 {{define "header"}}
 <!DOCTYPE html>
 
-<html>
+<html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; chareset-utf-8">
 		<link rel="shortcut icon" href="/static/img/favicon.png">
