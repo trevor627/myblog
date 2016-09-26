@@ -1,0 +1,12 @@
+git remote -v
+git fetch origin master:temp
+git diff temp
+git merge temp
+git branch -d temp
+
+
+
+git status
+git add -A
+git commit -m "myblog"
+git push origin:master
