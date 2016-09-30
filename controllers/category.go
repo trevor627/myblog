@@ -12,7 +12,6 @@ type CategoryController struct {
 
 func (this *CategoryController) Get() {
 	op := this.Input().Get("op")
-
 	switch op {
 	case "add":
 		name := this.Input().Get("name")
@@ -24,6 +23,7 @@ func (this *CategoryController) Get() {
 		if err != nil {
 			beego.Error(err)
 		}
+
 		this.Redirect("/category", 302)
 		return
 	case "del":
@@ -32,20 +32,21 @@ func (this *CategoryController) Get() {
 			break
 		}
 
-		err := models.DelCategory(id)
+		err := models.DeleteCategory(id)
 		if err != nil {
 			beego.Error(err)
 		}
-		this.Redirect("/category", 301)
+
+		this.Redirect("/category", 302)
 		return
 	}
 
 	this.Data["IsCategory"] = true
 	this.TplName = "category.html"
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 
 	var err error
-	this.Data["Categoies"], err = models.GetAllCategories()
-
+	this.Data["Categories"], err = models.GetAllCategories()
 	if err != nil {
 		beego.Error(err)
 	}
