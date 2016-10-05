@@ -1,24 +1,20 @@
 {{template "header"}}
-		<title>首页 - 我的 beego 博客</title>
+		<title>{{.Topic.Title}} - 我的 beego 博客</title>
 	</head>
 	
 	<body>
 		<nav class="navbar navbar-inverse" role="navigation">
+			<div class="container-fluid">
 				<div class="container" >
 					{{template "navbar".}}
 				</div>
+			</div>
 		</nav>
 		
 		<div class="container">
-			{{range .Topics}}
-			<div class="page-header">
-				<h2>{{.Title}}</h2>
-				<h6 class="text-muted">文章发表于 {{.Created}}, 共有 {{.Views}} 次浏览, {{.ReplyCount}} 个评论</h6>
-				<p>
-					{{.Content}}
-				</p>
-			</div>
-			{{end}}
+			<h2>{{.Topic.Title}}<a href="/topic/modify?tid={{.Tid}}" class="btn btn-default">修改文章</a>
+</h2>
+			{{.Topic.Content}}
 		</div>
 		
 		<script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
