@@ -108,45 +108,25 @@ func GetAllCategories() ([]*Category, error) {
 	return cates, err
 }
 
-<<<<<<< HEAD
-func AddTopic(title, content string) error {
-	o := orm.NewOrm()
-
-	topic := &Topic{
-		Title:     title,
-		Content:   content,
-		Created:   time.Now(),
-		Updated:   time.Now(),
-		ReplyTime: time.Now(),
-	}
-
-	_, err := o.Insert(topic)
-	return err
-}
-
-func GetAllTopics(isDesc bool) (topics []*Topic, err error) {
-	o := orm.NewOrm()
-
-=======
 func AddTopic(title, category, label, content string) error {
+	// 处理标签
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 
 	o := orm.NewOrm()
 
 	topic := &Topic{
-		Title:     title,
-		Category:  category,
-		Labels:    label,
-		Content:   content,
-		Created:   time.Now(),
-		Updated:   time.Now(),
-		ReplyTime: time.Now(),
+		Title:    title,
+		Category: category,
+		Labels:   label,
+		Content:  content,
+		Created:  time.Now(),
+		Updated:  time.Now(),
 	}
-
 	_, err := o.Insert(topic)
 	if err != nil {
 		return err
 	}
+
 	cate := new(Category)
 	qs := o.QueryTable("category")
 	err = qs.Filter("title", category).One(cate)
@@ -160,21 +140,16 @@ func AddTopic(title, category, label, content string) error {
 
 func GetAllTopics(cate, label string, isDesc bool) (topics []*Topic, err error) {
 	o := orm.NewOrm()
-
->>>>>>> newbranch
 	topics = make([]*Topic, 0)
 
 	qs := o.QueryTable("topic")
 	if isDesc {
-<<<<<<< HEAD
-=======
 		if len(cate) > 0 {
 			qs = qs.Filter("category", cate)
 		}
 		if len(label) > 0 {
 			qs = qs.Filter("labels__contains", "$"+label+"#")
 		}
->>>>>>> newbranch
 		_, err = qs.OrderBy("-created").All(&topics)
 	} else {
 		_, err = qs.All(&topics)
@@ -196,25 +171,11 @@ func GetTopic(tid string) (*Topic, error) {
 	err = qs.Filter("id", tidNum).One(topic)
 	if err != nil {
 		return nil, err
-<<<<<<< HEAD
 	}
 
 	topic.Views++
 	_, err = o.Update(topic)
 	return topic, err
-
-}
-
-func ModifyTopic(tid, title, content string) error {
-	tidNum, err := strconv.ParseInt(tid, 10, 64)
-=======
-	}
-
-	topic.Views++
-	_, err = o.Update(topic)
-
-	topic.Labels = strings.Replace(strings.Replace(topic.Labels, "#", " ", -1), "$", " ", -1)
-	return topic, nil
 
 }
 
@@ -310,30 +271,12 @@ func AddReply(tid, nickname, content string) error {
 		Content: content,
 		Created: time.Now(),
 	}
-
 	o := orm.NewOrm()
 	_, err = o.Insert(reply)
->>>>>>> newbranch
 	if err != nil {
 		return err
 	}
 
-<<<<<<< HEAD
-	o := orm.NewOrm()
-	topic := &Topic{Id: tidNum}
-	if o.Read(topic) == nil {
-		topic.Title = title
-		topic.Content = content
-		topic.Updated = time.Now()
-		o.Update(topic)
-	}
-	return nil
-}
-
-func DeleteTopic(tid string) error {
-	tidNum, err := strconv.ParseInt(tid, 10, 64)
-	if err != nil {
-=======
 	topic := &Topic{Id: tidNum}
 	if o.Read(topic) == nil {
 		topic.ReplyTime = time.Now()
@@ -341,7 +284,6 @@ func DeleteTopic(tid string) error {
 		_, err = o.Update(topic)
 	}
 	return err
-
 }
 
 func GetAllReplies(tid string) (replies []*Comment, err error) {
@@ -356,21 +298,15 @@ func GetAllReplies(tid string) (replies []*Comment, err error) {
 	qs := o.QueryTable("comment")
 	_, err = qs.Filter("tid", tidNum).All(&replies)
 	return replies, err
-
 }
 
 func DeleteReply(rid string) error {
 	ridNum, err := strconv.ParseInt(rid, 10, 64)
 	if err != nil {
->>>>>>> newbranch
 		return err
 	}
 
 	o := orm.NewOrm()
-<<<<<<< HEAD
-	topic := &Topic{Id: tidNum}
-	_, err = o.Delete(topic)
-=======
 
 	var tidNum int64
 	reply := &Comment{Id: ridNum}
@@ -395,6 +331,5 @@ func DeleteReply(rid string) error {
 		topic.ReplyCount = int64(len(replies))
 		_, err = o.Update(topic)
 	}
->>>>>>> newbranch
 	return err
 }
