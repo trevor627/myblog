@@ -12,10 +12,6 @@
 		</nav>
 		
 		<div class="container">
-			<h2>{{.Topic.Title}}<a href="/topic/modify?tid={{.Tid}}" class="btn btn-default">修改文章</a></h2>
-			{{.Topic.Content}}
-		</div>
-		
 			{{$lables := .Labels}}
 			{{with .Topic}}
 			<h1>{{.Title}} <small>{{.Category}}</small></h1>

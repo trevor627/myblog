@@ -109,18 +109,18 @@ func GetAllCategories() ([]*Category, error) {
 }
 
 func AddTopic(title, category, label, content string) error {
-	// 处理标签
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 
 	o := orm.NewOrm()
 
 	topic := &Topic{
-		Title:    title,
-		Category: category,
-		Labels:   label,
-		Content:  content,
-		Created:  time.Now(),
-		Updated:  time.Now(),
+		Title:     title,
+		Category:  category,
+		Labels:    label,
+		Content:   content,
+		Created:   time.Now(),
+		Updated:   time.Now(),
+		ReplyTime: time.Now(),
 	}
 	_, err := o.Insert(topic)
 	if err != nil {
@@ -175,8 +175,9 @@ func GetTopic(tid string) (*Topic, error) {
 
 	topic.Views++
 	_, err = o.Update(topic)
-	return topic, err
 
+	topic.Labels = strings.Replace(strings.Replace(topic.Labels, "#", " ", -1), "$", "", -1)
+	return topic, nil
 }
 
 func ModifyTopic(tid, title, category, label, content string) error {
@@ -328,7 +329,11 @@ func DeleteReply(rid string) error {
 	topic := &Topic{Id: tidNum}
 	if o.Read(topic) == nil {
 		topic.ReplyTime = replies[0].Created
-		topic.ReplyCount = int64(len(replies))
+		if int64(len(replies)) != 0 {
+			topic.ReplyCount = int64(len(replies))
+		} else {
+			topic.ReplyCount = 0
+		}
 		_, err = o.Update(topic)
 	}
 	return err
