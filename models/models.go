@@ -108,19 +108,20 @@ func GetAllCategories() ([]*Category, error) {
 	return cates, err
 }
 
-func AddTopic(title, category, label, content string) error {
+func AddTopic(title, category, label, content, attachment string) error {
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 
 	o := orm.NewOrm()
 
 	topic := &Topic{
-		Title:     title,
-		Category:  category,
-		Labels:    label,
-		Content:   content,
-		Created:   time.Now(),
-		Updated:   time.Now(),
-		ReplyTime: time.Now(),
+		Title:      title,
+		Category:   category,
+		Labels:     label,
+		Content:    content,
+		Attachment: attachment,
+		Created:    time.Now(),
+		Updated:    time.Now(),
+		ReplyTime:  time.Now(),
 	}
 	_, err := o.Insert(topic)
 	if err != nil {
@@ -180,7 +181,7 @@ func GetTopic(tid string) (*Topic, error) {
 	return topic, nil
 }
 
-func ModifyTopic(tid, title, category, label, content string) error {
+func ModifyTopic(tid, title, category, label, content, attachment string) error {
 	tidNum, err := strconv.ParseInt(tid, 10, 64)
 	if err != nil {
 		return err
@@ -188,15 +189,17 @@ func ModifyTopic(tid, title, category, label, content string) error {
 
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 
-	var oldCate string
+	var oldCate, oldAttach string
 	o := orm.NewOrm()
 	topic := &Topic{Id: tidNum}
 	if o.Read(topic) == nil {
 		oldCate = topic.Category
+		oldAttach = topic.Attachment
 		topic.Title = title
 		topic.Category = category
 		topic.Labels = label
 		topic.Content = content
+		topic.Attachment = attachment
 		topic.Updated = time.Now()
 		o.Update(topic)
 		if err != nil {
@@ -215,6 +218,10 @@ func ModifyTopic(tid, title, category, label, content string) error {
 			}
 			_, err = o.Update(cate)
 		}
+	}
+
+	if len(oldAttach) > 0 {
+		os.Remove(path.Join("attachment", oldAttach))
 	}
 
 	cate := new(Category)
