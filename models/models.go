@@ -335,12 +335,13 @@ func DeleteReply(rid string) error {
 
 	topic := &Topic{Id: tidNum}
 	if o.Read(topic) == nil {
-		topic.ReplyTime = replies[0].Created
-		if int64(len(replies)) != 0 {
-			topic.ReplyCount = int64(len(replies))
+		if len(replies) != 0 {
+			topic.ReplyTime = replies[0].Created
 		} else {
-			topic.ReplyCount = 0
+			topic.ReplyTime = topic.Updated
 		}
+
+		topic.ReplyCount = int64(len(replies))
 		_, err = o.Update(topic)
 	}
 	return err
